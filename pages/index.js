@@ -3,6 +3,9 @@ import { FaSort } from 'react-icons/fa';
 import { MdKeyboardArrowRight } from 'react-icons/md';
 import { AiFillPlayCircle, AiOutlineEye } from 'react-icons/ai';
 
+import { useSelector } from 'react-redux'
+import { selectValue, selectSearchData } from '../slices/searchSlice'
+
 import Header from '../components/Header';
 import Carousels from '@/components/Carousels';
 
@@ -13,7 +16,11 @@ const navItems = [
   { href: '/upcoming', label: 'Plans' },
 ];
 
+
 const HomePage = () => {
+
+  const searchMovies = useSelector(selectValue)
+  const searchData = useSelector(selectSearchData)
 
   const [popularMovies, setPopularMovies] = useState([]);
   const [upComingMovies, setUpComingMovies] = useState([]);
@@ -48,7 +55,7 @@ const HomePage = () => {
   return (
     <div>
       <Header logoText="MOVEA" navItems={navItems} />
-      <div className="max-w-screen-xl flex flex-wrap justify-between mx-auto p-4 pt-0 gap-3 border-gray-700 border-0 md:border-t">
+      <div className="max-w-screen-xl flex flex-wrap justify-between mx-auto p-2 md:p-4 pt-0 gap-3 border-gray-700 border-0 md:border-t">
         <div className=" hidden md:block border-0 md:border-1 border-white text-white p-4 w-full md:w-1/3 lg:w-1/4">
           <div className="flex items-center justify-between border-gray-700 mb-5">
             <h1 className="text-2xl font-medium">New Trailers</h1>
@@ -70,25 +77,45 @@ const HomePage = () => {
         </div>
         <div className="border-r border-gray-700 min-h-screen w-[1px] hidden md:block" />
         <div className="border-1 border-white text-white flex-1 py-4">
-          <Carousels slides={popularMovies?.results} />
-          <div className="flex items-center justify-between mt-8">
-            <h1 className="text-2xl font-medium">Upcoming Movies</h1>
-            <h1 className="text-base font-medium flex items-center text-gray-400">
-              All movies <MdKeyboardArrowRight className="w-5 h-5" />
-            </h1>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-5">
-            {Array.isArray(upComingMovies?.results) &&
-              upComingMovies?.results.map((movie) => (
-                <SingleMovie
-                  img={`url(https://image.tmdb.org/t/p/original${movie ? movie.poster_path : ''})`}
-                  views={movie.vote_average + 'M'}
-                  title={movie.original_title}
-                  ago={movie.release_date}
-                  key={movie.title}
-                />
-              ))}
-          </div>
+          {
+            searchData != '' && searchMovies.results ? (
+              searchMovies.total_results === 0 ? <h1>movie not found</h1> :
+                (<div className="grid grid-cols-1 gap-6 mt-5">
+
+                  {searchMovies.results?.map((movie) => (
+                    <SearchMovie
+                      img={`url(https://image.tmdb.org/t/p/original${movie ? movie.poster_path : ''})`}
+                      views={movie.vote_average + 'M'}
+                      title={movie.original_title}
+                      ago={movie.release_date}
+                      key={movie.title}
+                    />
+                  ))}
+                </div>)
+            ) : (
+              <>
+                <Carousels slides={popularMovies?.results} />
+                <div className="flex items-center justify-between mt-8">
+                  <h1 className="text-2xl font-medium">Upcoming Movies</h1>
+                  <h1 className="text-base font-medium flex items-center text-gray-400">
+                    All movies <MdKeyboardArrowRight className="w-5 h-5" />
+                  </h1>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-5">
+                  {Array.isArray(upComingMovies?.results) &&
+                    upComingMovies?.results.map((movie) => (
+                      <SingleMovie
+                        img={`url(https://image.tmdb.org/t/p/original${movie ? movie.poster_path : ''})`}
+                        views={movie.vote_average + 'M'}
+                        title={movie.original_title}
+                        ago={movie.release_date}
+                        key={movie.title}
+                      />
+                    ))}
+                </div>
+              </>
+            )
+          }
         </div>
       </div>
     </div>
@@ -112,6 +139,25 @@ const SingleMovie = ({ img, views, title, ago }) => {
             <p className="font-light text-[11px] text-white/50">{ago}</p>
           </div>
         </div>
+      </div>
+    </div>
+  );
+};
+
+const SearchMovie = ({ img, views, title, ago }) => {
+  return (
+    <div className="rounded-xl overflow-hidden w-full flex">
+      <div className="h-[80px] w-[80px] rounded-xl" style={{ backgroundImage: img, backgroundSize: 'cover', backgroundPosition: 'center -19px' }}>
+      </div>
+      <div className="w-full pl-4 pr-2 flex gap-3 rounded-r-xl justify-between">
+        <div>
+          <h2 className="font-normal text-[18px] truncate overflow-hidden lg:max-w-[750px] mb-1">{title}</h2>
+          <div className="flex gap-2 items-center pt-1 pr-3 text-white/80">
+            <AiOutlineEye className="w-5 h-5" />
+            <span className="text-sm">{views}</span>
+          </div>
+        </div>
+        <AiFillPlayCircle className="w-10 h-10 text-white/70" />
       </div>
     </div>
   );
