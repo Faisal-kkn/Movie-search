@@ -4,6 +4,7 @@ import { MdKeyboardArrowRight } from 'react-icons/md';
 import { AiFillPlayCircle, AiOutlineEye } from 'react-icons/ai';
 
 import Header from '../components/Header';
+import Carousels from '../components/Carousels';
 
 const navItems = [
   { href: '/', label: 'Movies' },
@@ -42,7 +43,6 @@ const HomePage = () => {
     },
   ]);
 
- 
   return (
     <div>
       <Header logoText="MOVEA" navItems={navItems} />
@@ -64,6 +64,7 @@ const HomePage = () => {
         </div>
         <div className="border-r border-gray-700 min-h-screen w-[1px] hidden md:block" />
         <div className="border-1 border-white text-white flex-1 py-4">
+          <Carousels slides={slides} />
           <>
             <div className="flex items-center justify-between mt-8">
               <h1 className="text-2xl font-medium">Upcoming Movies</h1>
