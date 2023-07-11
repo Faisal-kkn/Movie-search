@@ -2,8 +2,27 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { AiOutlineClose } from 'react-icons/ai';
 
+import { useSelector, useDispatch } from 'react-redux'
+import { storeSearchValue, storeSearchData, selectSearchData } from '../slices/searchSlice'
 
 const Header = ({ logoText, navItems }) => {
+
+    const dispatch = useDispatch()
+    const searchData = useSelector(selectSearchData)
+
+    const PUBLIC_URL = process.env.NEXT_PUBLIC_API_URL;
+    const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
+
+    const searchMovie = async (e) => {
+        e.preventDefault()
+        try {
+            const searchResponse = await fetch(`${PUBLIC_URL}/search/movie?query=${searchData}&api_key=${API_KEY}&language=en-US&page=1`);
+            const searchResults = await searchResponse.json();
+            dispatch(storeSearchValue(searchResults))
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
 
     return (
         <nav className=" border-gray-200 dark:bg-gray-900">
@@ -16,19 +35,31 @@ const Header = ({ logoText, navItems }) => {
                     </a>
                 </Link>
                 <div className=" md:order-2 relative">
-                    <form className="w-full flex-1 lg:w-[20vw]">
+                    <form className="w-full flex-1 lg:w-[20vw]" onSubmit={searchMovie}>
                         <div className="relative">
                             <input
+                                onChange={(e) => dispatch(storeSearchData(e.target.value))}
                                 type="text"
                                 className="block w-full p-4 pl-3 pr-[105px] text-sm text-white border border-gray-700 rounded-lg bg-gray-800"
                                 placeholder="Search Movies ..."
+                                value={searchData}
                                 required
                             />
-                            <button className="text-white absolute right-2.5 bottom-2.5  hover:bg-orange-500 font-medium rounded-lg text-sm px-4 py-2 bg-orange-500/75">
+                            <button type="submit" className="text-white absolute right-2.5 bottom-2.5  hover:bg-orange-500 font-medium rounded-lg text-sm px-4 py-2 bg-orange-500/75">
                                 Search
                             </button>
                         </div>
                     </form>
+                    {
+                        searchData && (
+                            <button onClick={() =>{
+                                dispatch(storeSearchData(('')))
+                                dispatch(storeSearchValue([]))
+                            }} className="text-white absolute right-[90px] bottom-[20px] cursor-pointer">
+                                <AiOutlineClose className="w-4 h-4 " />
+                            </button>
+                        )
+                    }
                 </div>
                 <div
                     className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
