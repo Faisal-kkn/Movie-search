@@ -20,9 +20,8 @@ const Carousels = ({ slides }) => {
         >
             {
                 Array.isArray(slides) && slides?.map(item => {
-                    console.log({item});
                     return (
-                        <Slide key={item?.title} image={item.img} title={item?.title} />
+                        <Slide key={item?.original_title} image={item.backdrop_path} title={item?.original_title} />
                     )
                 }).slice(15, 20)
             }
@@ -34,12 +33,12 @@ const Carousels = ({ slides }) => {
 const Slide = ({ image, title }) => {
     return (
         <div className='h-[250px] rounded-xl overflow-hidden relative border border-gray-700/30'>
-            <img src={image} />
+            <img src={`https://image.tmdb.org/t/p/original${image && image}`} />
             <button className='absolute bottom-[20px] text-white/80 left-[20px] flex bg-orange-500/75 rounded-xl p-3 px-4 items-center gap-2'>
                 <AiFillPlayCircle className='w-8 h-8 text-white/50' />
                 <span className='font-thin'>Watch Now</span>
             </button>
-            <h2 className={`absolute top-[38%] right-11 text-white uppercase ${ChelaOneFont.className}`} style={{ fontSize: '40px', textShadow: '3px 4px black'}}>{title}</h2>
+            <h2 className={`absolute top-[38%] right-11 text-white uppercase ${ChelaOneFont.className}`} style={{ fontSize: '40px', textShadow: '3px 4px black' }}>{title}</h2>
         </div>
     );
 };

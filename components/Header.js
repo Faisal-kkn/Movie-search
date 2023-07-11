@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import Link from 'next/link';
 import { AiOutlineClose } from 'react-icons/ai';
+
 
 const Header = ({ logoText, navItems }) => {
 
@@ -14,7 +16,7 @@ const Header = ({ logoText, navItems }) => {
                     </a>
                 </Link>
                 <div className=" md:order-2 relative">
-                    <form className="w-full flex-1 lg:w-[20vw]" >
+                    <form className="w-full flex-1 lg:w-[20vw]">
                         <div className="relative">
                             <input
                                 type="text"
@@ -22,14 +24,11 @@ const Header = ({ logoText, navItems }) => {
                                 placeholder="Search Movies ..."
                                 required
                             />
-                            <button type="submit" className="text-white absolute right-2.5 bottom-2.5  hover:bg-orange-500 font-medium rounded-lg text-sm px-4 py-2 bg-orange-500/75">
+                            <button className="text-white absolute right-2.5 bottom-2.5  hover:bg-orange-500 font-medium rounded-lg text-sm px-4 py-2 bg-orange-500/75">
                                 Search
                             </button>
                         </div>
                     </form>
-                            <button className="text-white absolute right-[90px] bottom-[20px] cursor-pointer">
-                                <AiOutlineClose className="w-4 h-4 " />
-                            </button>
                 </div>
                 <div
                     className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"

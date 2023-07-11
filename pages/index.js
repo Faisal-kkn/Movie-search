@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaSort } from 'react-icons/fa';
 import { MdKeyboardArrowRight } from 'react-icons/md';
 import { AiFillPlayCircle, AiOutlineEye } from 'react-icons/ai';
 
 import Header from '../components/Header';
-import Carousels from '../components/Carousels';
+import Carousels from '@/components/Carousels';
 
 const navItems = [
   { href: '/', label: 'Movies' },
@@ -13,35 +13,37 @@ const navItems = [
   { href: '/upcoming', label: 'Plans' },
 ];
 
-
 const HomePage = () => {
 
-  const [upComingMovies, setUpComingMovies] = useState([
-    {
-      img: 'https://mir-s3-cdn-cf.behance.net/project_modules/fs/c38994103185201.5f476d193a92b.jpg',
-      views: '2.3M',
-      title: 'Minnal murali',
-      ago: '2.3hr',
-    },
-    {
-      img: 'https://mir-s3-cdn-cf.behance.net/project_modules/fs/c38994103185201.5f476d193a92b.jpg',
-      views: '2.3M',
-      title: 'Minnal murali',
-      ago: '2.3hr',
-    },
-    {
-      img: 'https://mir-s3-cdn-cf.behance.net/project_modules/fs/c38994103185201.5f476d193a92b.jpg',
-      views: '2.3M',
-      title: 'Minnal murali',
-      ago: '2.3hr',
-    },
-    {
-      img: 'https://mir-s3-cdn-cf.behance.net/project_modules/fs/c38994103185201.5f476d193a92b.jpg',
-      views: '2.3M',
-      title: 'Minnal murali',
-      ago: '2.3hr',
-    },
-  ]);
+  const [popularMovies, setPopularMovies] = useState([]);
+  const [upComingMovies, setUpComingMovies] = useState([]);
+  const [nowPlayingMovies, setNowPlayingMovies] = useState([]);
+
+  const PUBLIC_URL = process.env.NEXT_PUBLIC_API_URL;
+  const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
+
+  useEffect(() => {
+    fetchMovies();
+
+    async function fetchMovies() {
+      try {
+        const popularResponse = await fetch(`${PUBLIC_URL}/movie/popular?api_key=${API_KEY}&language=en-US`);
+        const popularData = await popularResponse.json();
+        setPopularMovies(popularData);
+
+        const upcomingResponse = await fetch(`${PUBLIC_URL}/movie/upcoming?api_key=${API_KEY}&language=en-US`);
+        const upcomingData = await upcomingResponse.json();
+        setUpComingMovies(upcomingData);
+
+        const nowPlayingResponse = await fetch(`${PUBLIC_URL}/movie/now_playing?api_key=${API_KEY}&language=en-US`);
+        const nowPlayingData = await nowPlayingResponse.json();
+        setNowPlayingMovies(nowPlayingData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+  }, []);
+
 
   return (
     <div>
@@ -55,36 +57,38 @@ const HomePage = () => {
               Today <FaSort className="w-3 h-3" />
             </h1>
           </div>
-          <SingleMovie
-            img={`url('https://mir-s3-cdn-cf.behance.net/project_modules/fs/c38994103185201.5f476d193a92b.jpg')`}
-            views={'3M'}
-            title={'Minnal murali'}
-            ago={'20-10-2021'}
-          />
+
+          {nowPlayingMovies?.results?.map((movie) => (
+            <SingleMovie
+              img={`url(https://image.tmdb.org/t/p/original${movie ? movie.poster_path : ''})`}
+              views={movie.vote_average + 'M'}
+              title={movie.original_title}
+              ago={movie.release_date}
+              key={movie.title}
+            />
+          )).slice(0, 9)}
         </div>
         <div className="border-r border-gray-700 min-h-screen w-[1px] hidden md:block" />
         <div className="border-1 border-white text-white flex-1 py-4">
-          <Carousels slides={slides} />
-          <>
-            <div className="flex items-center justify-between mt-8">
-              <h1 className="text-2xl font-medium">Upcoming Movies</h1>
-              <h1 className="text-base font-medium flex items-center text-gray-400">
-                All movies <MdKeyboardArrowRight className="w-5 h-5" />
-              </h1>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-5">
-              {Array.isArray(upComingMovies) &&
-                upComingMovies.map((movie) => (
-                  <SingleMovie
-                    img={`url(${movie.img})`}
-                    views={movie.views + 'M'}
-                    title={movie.title}
-                    ago={movie.ago}
-                    key={movie.title}
-                  />
-                ))}
-            </div>
-          </>
+          <Carousels slides={popularMovies?.results} />
+          <div className="flex items-center justify-between mt-8">
+            <h1 className="text-2xl font-medium">Upcoming Movies</h1>
+            <h1 className="text-base font-medium flex items-center text-gray-400">
+              All movies <MdKeyboardArrowRight className="w-5 h-5" />
+            </h1>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-5">
+            {Array.isArray(upComingMovies?.results) &&
+              upComingMovies?.results.map((movie) => (
+                <SingleMovie
+                  img={`url(https://image.tmdb.org/t/p/original${movie ? movie.poster_path : ''})`}
+                  views={movie.vote_average + 'M'}
+                  title={movie.original_title}
+                  ago={movie.release_date}
+                  key={movie.title}
+                />
+              ))}
+          </div>
         </div>
       </div>
     </div>
@@ -108,25 +112,6 @@ const SingleMovie = ({ img, views, title, ago }) => {
             <p className="font-light text-[11px] text-white/50">{ago}</p>
           </div>
         </div>
-      </div>
-    </div>
-  );
-};
-
-const SearchMovie = ({ img, views, title, ago }) => {
-  return (
-    <div className="rounded-xl overflow-hidden w-full flex">
-      <div className="h-[80px] w-[80px] rounded-xl" style={{ backgroundImage: img, backgroundSize: 'cover', backgroundPosition: 'center -19px' }}>
-      </div>
-      <div className="w-full pl-4 pr-2 flex gap-3 rounded-r-xl justify-between">
-        <div>
-          <h2 className="font-normal text-[18px] truncate overflow-hidden lg:max-w-[750px] mb-1">{title}</h2>
-          <div className="flex gap-2 items-center pt-1 pr-3 text-white/80">
-            <AiOutlineEye className="w-5 h-5" />
-            <span className="text-sm">{views}</span>
-          </div>
-        </div>
-        <AiFillPlayCircle className="w-10 h-10 text-white/70" />
       </div>
     </div>
   );
