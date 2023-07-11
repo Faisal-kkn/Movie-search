@@ -32,9 +32,9 @@ const Carousels = ({ slides }) => {
 
 const Slide = ({ image, title }) => {
     return (
-        <div className='h-[250px] rounded-xl overflow-hidden relative border border-gray-700/30'>
+        <div className='h-[225px] md:h-[250px] rounded-xl overflow-hidden relative border border-gray-700/30'>
             <img src={`https://image.tmdb.org/t/p/original${image && image}`} />
-            <button className='absolute bottom-[50px] left-[40px] md:bottom-[20px] text-white/80 md:left-[20px] flex bg-orange-500/75 rounded-xl p-3 px-4 items-center gap-2'>
+            <button className='absolute bottom-[10px] left-[10px] md:bottom-[20px] text-white/80 md:left-[20px] flex bg-orange-500/75 rounded-xl p-3 px-4 items-center gap-2'>
                 <AiFillPlayCircle className='w-8 h-8 text-white/50' />
                 <span className='font-thin'>Watch Now</span>
             </button>
