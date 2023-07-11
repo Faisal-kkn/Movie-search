@@ -55,7 +55,7 @@ const HomePage = () => {
   return (
     <div>
       <Header logoText="MOVEA" navItems={navItems} />
-      <div className="max-w-screen-xl flex flex-wrap justify-between mx-auto p-4 pt-0 gap-3 border-gray-700 border-0 md:border-t">
+      <div className="max-w-screen-xl flex flex-wrap justify-between mx-auto p-2 md:p-4 pt-0 gap-3 border-gray-700 border-0 md:border-t">
         <div className=" hidden md:block border-0 md:border-1 border-white text-white p-4 w-full md:w-1/3 lg:w-1/4">
           <div className="flex items-center justify-between border-gray-700 mb-5">
             <h1 className="text-2xl font-medium">New Trailers</h1>

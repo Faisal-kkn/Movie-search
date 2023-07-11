@@ -34,11 +34,11 @@ const Slide = ({ image, title }) => {
     return (
         <div className='h-[250px] rounded-xl overflow-hidden relative border border-gray-700/30'>
             <img src={`https://image.tmdb.org/t/p/original${image && image}`} />
-            <button className='absolute bottom-[20px] text-white/80 left-[20px] flex bg-orange-500/75 rounded-xl p-3 px-4 items-center gap-2'>
+            <button className='absolute bottom-[50px] left-[40px] md:bottom-[20px] text-white/80 md:left-[20px] flex bg-orange-500/75 rounded-xl p-3 px-4 items-center gap-2'>
                 <AiFillPlayCircle className='w-8 h-8 text-white/50' />
                 <span className='font-thin'>Watch Now</span>
             </button>
-            <h2 className={`absolute top-[38%] right-11 text-white uppercase ${ChelaOneFont.className}`} style={{ fontSize: '40px', textShadow: '3px 4px black' }}>{title}</h2>
+            <h2 className={`absolute md:top-[38%] md:right-11 text-white uppercase slide-cnt ${ChelaOneFont.className}`} >{title}</h2>
         </div>
     );
 };
