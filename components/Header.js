@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import Link from 'next/link';
 import { AiOutlineClose } from 'react-icons/ai';
 
@@ -52,7 +51,7 @@ const Header = ({ logoText, navItems }) => {
                     </form>
                     {
                         searchData && (
-                            <button onClick={() =>{
+                            <button onClick={() => {
                                 dispatch(storeSearchData(('')))
                                 dispatch(storeSearchValue([]))
                             }} className="text-white absolute right-[90px] bottom-[20px] cursor-pointer">
